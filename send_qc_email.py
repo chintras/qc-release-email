@@ -1,16 +1,25 @@
 import requests
 import base64
+import json
 import os
 import re
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
-# Load .env from the same directory as this script
-try:
-    from dotenv import load_dotenv
-    load_dotenv(Path(__file__).parent / ".env")
-except ImportError:
-    pass  # python-dotenv not installed; fall back to existing env vars
+# Load settings.json first (local), then fall back to .env, then env vars
+_base = Path(__file__).parent
+_settings_file = _base / "settings.json"
+if _settings_file.exists():
+    with open(_settings_file, encoding="utf-8") as _f:
+        for _k, _v in json.load(_f).items():
+            os.environ.setdefault(_k, _v)
+else:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_base / ".env")
+    except ImportError:
+        pass
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 ADO_ORG         = "inatech"
@@ -83,9 +92,9 @@ def build_html(results):
     """Fill email_template.html placeholders with live DevOps data."""
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
 
-    now      = datetime.now()
+    now      = datetime.now(ZoneInfo("Asia/Kolkata"))
     date_str = now.strftime("%d - %b - %y")   # 28 - Apr - 26
-    time_str = now.strftime("%I : %M %p")      # 09 : 30 AM
+    time_str = now.strftime("%I : %M %p")      # 09 : 30 AM IST
 
     # Build component rows
     rows_html = ""
@@ -174,7 +183,8 @@ def send_email(html_body, subject):
 
 
 def main():
-    print(f"[START] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    ist = ZoneInfo("Asia/Kolkata")
+    print(f"[START] {datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')} IST")
 
     definitions = get_release_definitions()
     if not definitions:
@@ -187,7 +197,7 @@ def main():
         results.append((defn, dep))
 
     html    = build_html(results)
-    today   = datetime.now().strftime("%d %b %Y")
+    today   = datetime.now(ist).strftime("%d %b %Y")
     subject = f"QC Release for Techoil – {ENV_NAME} – {today}"
 
     send_email(html, subject)
