@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 13px; color: #000; padding: 20px;">
+
+  <!-- TABLE 1: Release Notes Info -->
+  <table border="1" cellpadding="8" cellspacing="0"
+         style="border-collapse: collapse; width: 520px; margin-bottom: 24px;">
+    <tr>
+      <td colspan="2"
+          style="background-color: #000000; color: #ffffff; font-weight: bold;
+                 text-align: center; font-size: 14px; letter-spacing: 0.5px;">
+        Release Notes
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 130px;">Date</td>
+      <td>{{DATE}}</td>
+    </tr>
+    <tr>
+      <td>Time</td>
+      <td>{{TIME}}</td>
+    </tr>
+    <tr>
+      <td>Version</td>
+      <td>{{VERSION}}</td>
+    </tr>
+    <tr>
+      <td>Environment</td>
+      <td>
+        <strong>{{ENV_NAME}}</strong> -
+        <a href="{{ENV_URL}}" style="color: #0563C1;">{{ENV_URL}}</a>
+      </td>
+    </tr>
+  </table>
+
+  <!-- TABLE 2: Components and Release Versions -->
+  <table border="1" cellpadding="8" cellspacing="0"
+         style="border-collapse: collapse; width: 520px;">
+    <tr>
+      <th style="background-color: #5B9BD5; color: #000000; text-align: center;
+                 font-weight: bold; width: 60px;">S. No</th>
+      <th style="background-color: #5B9BD5; color: #000000; text-align: center;
+                 font-weight: bold;">Component</th>
+      <th style="background-color: #5B9BD5; color: #000000; text-align: center;
+                 font-weight: bold;">Release version</th>
+    </tr>
+
+    <!-- DYNAMIC ROWS — replaced by Power Automate loop output -->
+    {{COMPONENT_ROWS}}
+
+  </table>
+
+  <br/>
+  <p style="color: #888; font-size: 11px; margin: 0;">
+    Auto-generated | Azure DevOps &mdash; Techoil QC1 Pipeline
+  </p>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Techoil — QC Release Email Scheduler
+# Runs every weekday at 9:30 AM IST (04:00 UTC)
+# Place this file in a repo inside your inatech/Techoil ADO project
+# ─────────────────────────────────────────────────────────────────────────────
+
+trigger: none   # do NOT run on code push
+
+schedules:
+  - cron: "0 4 * * 1-5"          # 04:00 UTC = 09:30 AM IST, Mon–Fri
+    displayName: "Daily QC Release Email — 9:30 AM IST"
+    branches:
+      include:
+        - main
+    always: true                  # run even when no code changes
+
+pool:
+  vmImage: ubuntu-latest          # free Microsoft-hosted agent
+
+steps:
+
+  # 1. Use Python 3.11
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.11"
+    displayName: "Set up Python 3.11"
+
+  # 2. Install dependencies
+  - script: pip install requests
+    displayName: "Install Python dependencies"
+
+  # 3. Run the email script
+  #    All secrets are set in Pipeline → Edit → Variables and marked as secret
+  - script: python send_qc_email.py
+    displayName: "Send QC Release Notes Email"
+    env:
+      ADO_PAT:        $(ADO_PAT)        # secret
+      EMAIL_FROM:     $(EMAIL_FROM)     # secret
+      EMAIL_PASSWORD: $(EMAIL_PASSWORD) # secret
+      EMAIL_TO:       $(EMAIL_TO)       # team group email

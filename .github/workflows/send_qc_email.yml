@@ -1,0 +1,32 @@
+name: QC Release Email - Techoil 3.3.1
+
+on:
+  schedule:
+    - cron: '0 4 * * 1-5'   # 04:00 UTC = 09:30 AM IST, Mon–Fri
+  workflow_dispatch:          # manual trigger from GitHub UI / GitHub mobile app
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send QC Release Email
+        run: python send_qc_email.py
+        env:
+          ADO_PAT:             ${{ secrets.ADO_PAT }}
+          AZURE_TENANT_ID:     ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID:     ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          EMAIL_FROM:          ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO:            ${{ secrets.EMAIL_TO }}
