@@ -198,7 +198,7 @@ def main():
 
     html    = build_html(results)
     today   = datetime.now(ist).strftime("%d %b %Y")
-    subject = f"QC Release for Techoil – {ENV_NAME} – {today}"
+    subject = f"QC Release for Techoil – {ENV_NAME} – (Develop)"
 
     send_email(html, subject)
     print("[DONE] Finished.")
